@@ -12,12 +12,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Build step
-      run: echo "Building static web app..."
+    - name: Build project
+      run: echo "Building static website..."
 
     - name: Run tests
       run: echo "No tests configured"
 
-    - name: Build completed
-      run: echo "CI Pipeline executed successfully"
+    - name: Notify Slack
+      if: always()
+      run: |
+        curl -X POST -H 'Content-type: application/json' \
+        --data "{\"text\":\"CI Pipeline Status: ${{ job.status }}\"}" \
+        ${{ secrets.SLACK_WEBHOOK_URL }}
 
