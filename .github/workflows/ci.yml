@@ -1,27 +1,32 @@
+
 name: CI Pipeline
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Build project
-      run: echo "Building static website..."
+      - name: Build project
+        run: echo "Building static website..."
 
-    - name: Run tests
-      run: echo "No tests configured"
+      - name: Run tests
+        run: echo "No tests configured"
 
-    - name: Notify Slack
-  if: always()
-  run: |
-    curl -X POST -H "Content-type: application/json" \
-    --data "{\"text\":\"CI Pipeline Status: ${{ job.status }}\"}" \
-    "${{ secrets.SLACK_WEBHOOK_URL }}"
+      - name: Notify Slack
+        if: always()
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          curl -X POST -H "Content-type: application/json" \
+          --data "{\"text\":\"CI Pipeline Status: ${JOB_STATUS}\"}" \
+          "$SLACK_WEBHOOK_URL"
 
